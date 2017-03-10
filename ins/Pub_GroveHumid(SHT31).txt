@@ -1,0 +1,10 @@
+Log:#include <Arduino.h>:inc::
+Log:#include <Wire.h>:inc::
+Log:#include "SHT31.h":inc::
+Log:SHT31 sht31 = SHT31();:def::
+Log:sht31.begin();:setup1::
+Log:String GTH_SHT31 = String(sht31.getHumidity());:pub:ins:
+Log:char buf[10];:pub:ins:
+Log:GTH_SHT31.toCharArray(buf,10);:pub:ins:
+Log:client.publish(\topic\,buf);:pub:ins:
+Description:Sound Sensor detect the sound strength of environment:
