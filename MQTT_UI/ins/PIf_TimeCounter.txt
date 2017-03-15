@@ -1,0 +1,4 @@
+Input:time:
+Log:if(timecounter%\time\==0){:pub:start:
+Log:}:pub:end:
+Description:Publisher publishes constantly time-delimited.1->1ms,1000->1s:
