@@ -77,6 +77,7 @@ public class MakeCode {
 		setLog("	}", "loop", "common");
 		setLog("	timecounter = timecounter+10;", "loop", "common");
 		insert("pub");
+		setLog("	client.loop();", "loop", "common");
 		setLog("	delay(10);", "loop", "common");
 		setLog("}", "loop", "common");
 		setLog("", "blank", "common");

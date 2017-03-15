@@ -85,6 +85,25 @@ public class Test_Display extends JFrame implements MqttCallback {
 		connect.mqttconnect();
 	}
 
+	public void disconnect() {
+		if (connect.isConnected) {
+			connect.mqttdisconnect();
+		}
+
+	}
+
+	public void closeall() {
+		for (int i = 0; i < jfr.size(); i++) {
+			app.remove(i);
+			jfr.get(i).dispose();
+			jfr.remove(i);
+			con.get(i).config.dispose();
+			con.remove(i);
+			tes.remove(i);
+			i--;
+		}
+	}
+
 	public void add(String topic, String type) {
 		tes.add(new test());
 		int temp = tes.size() - 1;

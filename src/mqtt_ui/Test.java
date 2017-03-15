@@ -7,6 +7,8 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -18,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-public class Test extends JFrame implements ActionListener {
+public class Test extends JFrame implements ActionListener,WindowListener {
 	static Test frame;
 	JTextField topic = new JTextField();
 	JComboBox<String> Test_Combo = new JComboBox<String>();
@@ -44,10 +46,14 @@ public class Test extends JFrame implements ActionListener {
 
 	}
 
+
+
+
 	Test(Connection connect) {
 
-		test = new Test_Display(connect);
 
+		test = new Test_Display(connect);
+		addWindowListener(this);
 
 		// 取得した一覧を表示する
 		Test_Combo.addItem("");
@@ -99,6 +105,73 @@ public class Test extends JFrame implements ActionListener {
 		setVisible(true);
 		setBounds(40, 40, 250, 200);
 		setResizable(false);
+	}
+
+
+
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+
+
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		test.closeall();
+		if(test!=null){
+			test.disconnect();
+			test.dispose();
+			test=null;
+		}
+	}
+
+
+
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+
+
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+
+
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+
+
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+
+
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		// TODO 自動生成されたメソッド・スタブ
+
 	}
 
 }
