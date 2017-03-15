@@ -1,9 +1,0 @@
-Input:analogpin:	
-Log:long GroveSound_sum=0;:pub:ins:
-Log:for(int i=0;i<32;i++){;:pub:ins:
-Log:	GroveSound_sum=GroveSound_sum+analogRead(A\analogpin\);:pub:ins:
-Log:}:pub:ins:
-Log:char buf[10];:pub:ins:
-Log:sprintf(buf,"%d",GroveSound_sum);:pub:ins:
-Log:client.publish(\topic\,buf);:pub:ins:
-Description:Sound Sensor detect the sound strength of environment:
