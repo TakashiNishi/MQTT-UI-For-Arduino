@@ -137,6 +137,7 @@ public class PIf extends JFrame implements ActionListener {
 	}
 	public void actionPerformed(ActionEvent e) {
 		topic.removeLogAtt("PIf");
+		topic.removeLogAtt("SIf");
 		for (int i = 0; i < log; i++) {
 			String temp = PIfLog.get(i);
 			ArrayList<String> cut = new ArrayList<String>();

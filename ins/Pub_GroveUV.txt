@@ -5,6 +5,8 @@ Log:for(int i=0;i<1024;i++){:pub:ins:
 Log:	GroveUV_value=analogRead(A\analogpin\);:pub:ins:
 Log:	GroveUV_sum=GroveUV_sum+GroveUV_value;:pub:ins:
 Log:}:pub:ins:
+Log:long meanVal = GroveUV_sum/1024;:pub:ins:
+Log: GroveUV_sum = (meanVal*1000/4.3-83)/21;:pub:ins:
 Log:char buf[10];:pub:ins:
 Log:sprintf(buf,"%d",GroveUV_sum);:pub:ins:
 Log:client.publish(\topic\,buf);:pub:ins:

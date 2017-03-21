@@ -139,6 +139,7 @@ public class Pub extends JFrame implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		topic.removeLogAtt("Pub");
+		topic.removeLogAtt("Sub");
 		for (int i = 0; i < log; i++) {
 			String temp = PubLog.get(i);
 			ArrayList<String> cut = new ArrayList<String>();

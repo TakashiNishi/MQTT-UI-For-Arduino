@@ -74,6 +74,8 @@ public class SubConfig extends JFrame implements ActionListener {
 		// insファイルからPD1属性ファイルを取得する
 		File file = new File("./\\ins");
 		File files[] = file.listFiles();
+		topic.removeLogAtt("PIf");
+		topic.removeLogAtt("Pub");
 
 		// 取得した一覧を表示する
 		SIf_Combo.addItem("");

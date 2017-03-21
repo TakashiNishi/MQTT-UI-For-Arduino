@@ -68,6 +68,8 @@ public class PubConfig extends JFrame implements ActionListener {
 		// insファイルからPD1属性ファイルを取得する
 		File file = new File("./\\ins");
 		File files[] = file.listFiles();
+		topic.removeLogAtt("SIf");
+		topic.removeLogAtt("Sub");
 
 		// 取得した一覧を表示する
 		PIf_Combo.addItem("");

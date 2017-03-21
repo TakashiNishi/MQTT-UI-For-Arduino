@@ -136,6 +136,7 @@ public class Sub extends JFrame implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		topic.removeLogAtt("Pub");
 		topic.removeLogAtt("Sub");
 		for (int i = 0; i < log; i++) {
 			String temp = SubLog.get(i);

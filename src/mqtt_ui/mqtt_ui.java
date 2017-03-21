@@ -22,6 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import org.eclipse.paho.client.mqttv3.MqttClient;
+
 public class mqtt_ui extends JFrame implements ActionListener {
 
 	// Pub・SubできるTopic数
@@ -53,6 +55,7 @@ public class mqtt_ui extends JFrame implements ActionListener {
 	MakeCode code;
 
 	static mqtt_ui frame;
+	MqttClient mqtt;
 	Test test;
 
 	public static void main(String[] args) {
@@ -226,7 +229,7 @@ public class mqtt_ui extends JFrame implements ActionListener {
 			what.get(i).setText(topicArray.get(i).getWhat());
 		}
 
-		if (mqtt_frame.getSelectedItem().equals("Arduino Yun")) {
+		if (mqtt_frame.getSelectedItem().equals("ArduinoYun")) {
 			WIFI_SSID.setEditable(false);
 			WIFI_SSID.setText("");
 			WIFI_PASSWORD.setEditable(false);
