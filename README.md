@@ -1,6 +1,6 @@
 # MQTT-UI-For-Arduino
 
-MQTT-UI-For-Arduino is the software for making publisher and subscriber of MQTT and testing connecting broker. 
+MQTT-UI-For-Arduino is the software for making publisher and subscriber of MQTT and testing connecting broker.
 
 ## Description
 

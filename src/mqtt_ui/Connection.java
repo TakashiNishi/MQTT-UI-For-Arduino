@@ -1,17 +1,25 @@
 package mqtt_ui;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-public class Connection{
+public class Connection extends JFrame{
 	static String arduino;
 	static String wifi_ssid;
 	static char[] wifi_password;
@@ -244,4 +252,108 @@ public class Connection{
 	public void setMqtt_password(char[] cs) {
 		Connection.mqtt_password = cs;
 	}
+
+	public void saveData() throws IOException{
+
+		   JFileChooser filechooser = new JFileChooser("./connect");
+		   FileNameExtensionFilter filter =
+				      new FileNameExtensionFilter("テキストファイル", "txt");
+		   filechooser.addChoosableFileFilter(filter);
+		    filechooser.setAcceptAllFileFilterUsed(false);
+		    int selected = filechooser.showSaveDialog(this);
+		    if (selected == JFileChooser.APPROVE_OPTION){
+		      File file = filechooser.getSelectedFile();
+		      file = new  File("./connect/"+file.getName()+".txt");
+		      PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+		      pw.println(arduino);
+		      pw.println(wifi_ssid);
+		      pw.println(wifi_password);
+		      pw.println(mqtt_clientid);
+		      pw.println(mqtt_server);
+		      pw.println(mqtt_port);
+		      pw.println(mqtt_username);
+		      pw.println(mqtt_password);
+		      pw.close();
+		    }else if (selected == JFileChooser.CANCEL_OPTION){
+		    }else if (selected == JFileChooser.ERROR_OPTION){
+		    }
+
+	}
+
+	public void openData(){
+	    JFileChooser filechooser = new JFileChooser("./connect");
+		   FileNameExtensionFilter filter =
+				      new FileNameExtensionFilter("テキストファイル", "txt");
+		   filechooser.addChoosableFileFilter(filter);
+		    filechooser.setAcceptAllFileFilterUsed(false);
+
+	    int selected = filechooser.showOpenDialog(this);
+	    if (selected == JFileChooser.APPROVE_OPTION){
+	      File file = filechooser.getSelectedFile();
+
+
+	      try{
+	        if (checkBeforeReadfile(file)){
+	          BufferedReader br
+	            = new BufferedReader(new FileReader(file));
+
+	          String str;
+	          int num=0;
+	          while((str = br.readLine()) != null){
+
+	        	  switch(num){
+	        	  case 0:
+	        		  arduino = str;
+	        		  break;
+	        	  case 1:
+	        		  wifi_ssid = str;
+	        		  break;
+	        	  case 2:
+	        		  wifi_password = str.toCharArray();
+	        		  break;
+	        	  case 3:
+	        		  mqtt_clientid = str;
+	        		  break;
+	        	  case 4:
+	        		  mqtt_server= str;
+	        		  break;
+	        	  case 5:
+	        		  mqtt_port = str;
+	        		  break;
+	        	  case 6:
+	        		  mqtt_username = str;
+	        		  break;
+	        	  case 7:
+	        		  mqtt_password = str.toCharArray();
+	        		  break;
+	        	  }
+	        	  num++;
+	          }
+
+
+
+
+
+
+	          br.close();
+	        }else{
+	          System.out.println("ファイルが見つからないか開けません");
+	        }
+	      }catch(FileNotFoundException err){
+	        System.out.println(err);
+	      }catch(IOException err){
+	        System.out.println(err);
+	      }
+	    }
+	}
+
+	 private static boolean checkBeforeReadfile(File file){
+		    if (file.exists()){
+		      if (file.isFile() && file.canRead()){
+		        return true;
+		      }
+		    }
+
+		    return false;
+		  }
 }

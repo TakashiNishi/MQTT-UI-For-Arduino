@@ -87,13 +87,13 @@ public class mqtt_ui extends JFrame implements ActionListener {
 		}
 
 		TOPICNUM = new JTextField(String.valueOf(num_of_topic), 2);
-		WIFI_SSID = new JTextField("Xperia Z_b212", 20);
-		WIFI_PASSWORD = new JPasswordField("gameemag21766622", 20);
-		MQTT_CLIENTID = new JTextField("Nishi", 20);
-		MQTT_SERVER = new JTextField("hel-g.com", 20);
-		MQTT_PORT = new JTextField("1883", 20);
-		MQTT_USERNAME = new JTextField("mqtt", 20);
-		MQTT_PASSWORD = new JPasswordField("krqfqqh9", 20);
+		WIFI_SSID = new JTextField("", 20);
+		WIFI_PASSWORD = new JPasswordField("", 20);
+		MQTT_CLIENTID = new JTextField("", 20);
+		MQTT_SERVER = new JTextField("", 20);
+		MQTT_PORT = new JTextField("", 20);
+		MQTT_USERNAME = new JTextField("", 20);
+		MQTT_PASSWORD = new JPasswordField("", 20);
 		COMPORT = new JTextField(5);
 
 		for (int i = 0; i < num_of_topic; i++) {
@@ -109,10 +109,14 @@ public class mqtt_ui extends JFrame implements ActionListener {
 		}
 
 		JButton button_change = new JButton("Change");
+		JButton button_save = new JButton("Save");
+		JButton button_open = new JButton("Open");
 		JButton button_send = new JButton("Send");
 		JButton button_code = new JButton("Code");
 		JButton button_test = new JButton("Test");
 		button_change.addActionListener(this);
+		button_save.addActionListener(this);
+		button_open.addActionListener(this);
 		button_send.addActionListener(this);
 		button_code.addActionListener(this);
 		button_test.addActionListener(this);
@@ -132,6 +136,8 @@ public class mqtt_ui extends JFrame implements ActionListener {
 		p.add(TOPICNUM);
 		p.add(button_change);
 		p.add(button_test);
+		p.add(button_save);
+		p.add(button_open);
 		main.add(p);
 
 		p = new JPanel();
@@ -294,7 +300,27 @@ public class mqtt_ui extends JFrame implements ActionListener {
 				test=null;
 			}
 			test = new Test(connect);
-		} else if (cmdName.length() > 5) {
+		}else if(cmdName=="Save"){
+			try {
+				connect.saveData();
+			} catch (IOException e1) {
+				// TODO 自動生成された catch ブロック
+				e1.printStackTrace();
+			}
+		}else if(cmdName=="Open"){
+			connect = new Connection();
+			connect.openData();
+
+			WIFI_SSID.setText(connect.getWifi_ssid());
+			WIFI_PASSWORD.setText(connect.getWifi_password().toString());
+			MQTT_CLIENTID.setText(connect.getMqtt_clientid());
+			MQTT_SERVER.setText(connect.getMqtt_server());
+			MQTT_PORT.setText(connect.getMqtt_port());
+			MQTT_USERNAME.setText(connect.getMqtt_username());
+			MQTT_PASSWORD.setText(connect.getMqtt_password().toString());
+
+
+		}else if (cmdName.length() > 5) {
 			if (cmdName.substring(0, 6).equals("Config")) {
 
 				select = Integer.parseInt(cmdName.substring(6, cmdName.length()));
