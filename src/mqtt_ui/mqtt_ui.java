@@ -312,12 +312,12 @@ public class mqtt_ui extends JFrame implements ActionListener {
 			connect.openData();
 
 			WIFI_SSID.setText(connect.getWifi_ssid());
-			WIFI_PASSWORD.setText(connect.getWifi_password().toString());
+			WIFI_PASSWORD.setText(String.valueOf(connect.getWifi_password()));
 			MQTT_CLIENTID.setText(connect.getMqtt_clientid());
 			MQTT_SERVER.setText(connect.getMqtt_server());
 			MQTT_PORT.setText(connect.getMqtt_port());
 			MQTT_USERNAME.setText(connect.getMqtt_username());
-			MQTT_PASSWORD.setText(connect.getMqtt_password().toString());
+			MQTT_PASSWORD.setText(String.valueOf(connect.getMqtt_password()));
 
 
 		}else if (cmdName.length() > 5) {
