@@ -25,6 +25,7 @@ public class PubConfig extends JFrame implements ActionListener {
 	PIf pif;
 	Pub pub;
 	Topic topic;
+	int select;
 
 	@Override
 	public void dispose() {
@@ -51,12 +52,12 @@ public class PubConfig extends JFrame implements ActionListener {
 		} else if (cmdName.equals("PIf_Combo")) {
 			String temp = (String) PIf_Combo.getSelectedItem();
 			if (!temp.isEmpty()) {
-				pif = new PIf(topic, temp);
+				pif = new PIf(topic, temp,select);
 			}
 		} else if (cmdName.equals("Pub_Combo")) {
 			String temp = (String) Pub_Combo.getSelectedItem();
 			if (!temp.isEmpty()) {
-				pub = new Pub(topic, temp);
+				pub = new Pub(topic, temp,select);
 			}
 		}
 
@@ -64,7 +65,7 @@ public class PubConfig extends JFrame implements ActionListener {
 		Pub_Combo.addActionListener(this);
 	}
 
-	PubConfig(String title, Topic topic) {
+	PubConfig(String title, Topic topic,int select) {
 		// insファイルからPD1属性ファイルを取得する
 		File file = new File("./\\ins");
 		File files[] = file.listFiles();

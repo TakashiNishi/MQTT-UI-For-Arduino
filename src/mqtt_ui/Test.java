@@ -20,12 +20,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+
+//UIにおいてMQTTサーバーとの接続テスト(Pub/Sub)をする
 public class Test extends JFrame implements ActionListener,WindowListener {
 	static Test frame;
 	JTextField topic = new JTextField();
 	JComboBox<String> Test_Combo = new JComboBox<String>();
 	Test_Display test;
 
+	//アクションリスナー
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String selected = (String) Test_Combo.getSelectedItem();
@@ -48,25 +51,24 @@ public class Test extends JFrame implements ActionListener,WindowListener {
 
 
 
-
+	//テストのUIを表示する
 	Test(Connection connect) {
 
 
 		test = new Test_Display(connect);
 		addWindowListener(this);
 
-		// 取得した一覧を表示する
+		// テスト内容を追加
 		Test_Combo.addItem("");
 		Test_Combo.addItem("log");
 		Test_Combo.addItem("line");
 		Test_Combo.addItem("varbutton");
 
-		// insファイルからPD1属性ファイルを取得する
-
+		//アイコン追加
 		ImageIcon icon = new ImageIcon("./img/MQTT.png");
 		setIconImage(icon.getImage());
 
-
+		//UIの表示
 		Test_Combo.setPreferredSize(new Dimension(100, 20));
 
 		setLayout(new BorderLayout());
@@ -118,7 +120,7 @@ public class Test extends JFrame implements ActionListener,WindowListener {
 
 
 
-
+	//このUIを閉じるとき、テスト用のグラフやログを一斉に閉じる
 	@Override
 	public void windowClosed(WindowEvent arg0) {
 		test.closeall();

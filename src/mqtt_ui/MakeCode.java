@@ -2,6 +2,7 @@ package mqtt_ui;
 
 import java.util.ArrayList;
 
+//TopicクラスやConnectクラスの情報を基に.inoファイルに入力するコードを決めるクラス
 public class MakeCode {
 
 	ArrayList<String> log = new ArrayList<String>();
@@ -11,20 +12,22 @@ public class MakeCode {
 	Connection con;
 	ArrayList<Topic> topic;
 
-	int getCodeSize() {
+	int getCodeSize() {//logのサイズを取得
 		return log.size();
 	}
 
-	String getCode(int i) {
+	String getCode(int i) {//i番目のlogを取得
 		return log.get(i);
 	}
 
-	void setLog(String log, String pos, String att) {
+	void setLog(String log, String pos, String att) {//新しいLogを追加する
 		this.log.add(log);
 		this.pos.add(log);
 		this.att.add(log);
 	}
 
+
+	//コードを生成する
 	MakeCode(Connection con, ArrayList<Topic> topic) {
 		this.con = con;
 		this.topic = topic;
@@ -33,6 +36,9 @@ public class MakeCode {
 		pos.clear();
 		att.clear();
 
+
+		//setLogにてコード一行を追加する。
+		//insertにてTopicやConnectionクラスが保持しているコードを挿入する
 		setLog("#include <PubSubClient.h>", "inc", "common");
 		insert("inc");
 		setLog("", "blank", "common");
@@ -46,15 +52,16 @@ public class MakeCode {
 		setLog("#define UI_MQTT_USERNAME \"" + Connection.getMqtt_username() + "\"", "def", "common");
 		setLog("", "blank", "common");
 
+		setLog("long ms=0;", "def", "common");
 		setLog("void callback(char* topic, byte* payload, unsigned int length);", "def", "common");
 		insert("def");
 		setLog("", "blank", "common");
 
-		setLog("PubSubClient client(UI_MQTT_SERVER, 1883, callback, wifi_client);", "def", "common");
+		setLog("PubSubClient client(UI_MQTT_SERVER, UI_MQTT_PORT, callback, wifi_client);", "def", "common");
 		setLog("long timecounter;", "def", "common");
 		setLog("", "blank", "common");
 
-		setLog("void setup(){", "setup", "common");
+		setLog("void setup(){", "etup", "common");
 		setLog("	Serial.begin(115200);", "setup", "common");
 		setLog("	Serial.println(\"start\");", "setup", "common");
 		setLog("	timecounter = 0;", "setup", "common");
@@ -77,7 +84,7 @@ public class MakeCode {
 		setLog("	}", "loop", "common");
 		setLog("	timecounter = timecounter+10;", "loop", "common");
 		insert("pub");
-		setLog("	delay(10);", "loop", "common");
+		setLog("ms = micros();", "loop", "common");
 		setLog("}", "loop", "common");
 		setLog("", "blank", "common");
 
@@ -90,6 +97,9 @@ public class MakeCode {
 		setLog("}", "callback", "common");
 	}
 
+
+	//MakeCode関数にてTopicやConnectionクラスに保存されたLogを挿入する
+	//Posの優先順位、Topic[0]>Topic[1]>....>Topic[n]>Connecttion
 	void insert(String pos) {
 		for (int i = 0; i < topic.size(); i++) {
 			for (int j = 0; j < topic.get(i).getLogsize(); j++) {

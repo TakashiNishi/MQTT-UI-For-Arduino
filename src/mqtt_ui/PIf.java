@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 
 public class PIf extends JFrame implements ActionListener {
 	// insファイルのうちから探し出し，解析する
+	//Pubクラスと内容がほぼ同じ
 	ArrayList<JTextField> PIfInput = new ArrayList<JTextField>();
 	ArrayList<JLabel> PIfLabel = new ArrayList<JLabel>();
 	ArrayList<String> PIfLog = new ArrayList<String>();
@@ -34,8 +35,9 @@ public class PIf extends JFrame implements ActionListener {
 	int row = 0;
 	int log = 0;
 	Topic topic;
+	int select;
 
-	PIf(Topic topic, String PIf) {
+	PIf(Topic topic, String PIf,int select) {
 		this.topic = topic;
 		ImageIcon icon = new ImageIcon("./img/MQTT.png");
 		setIconImage(icon.getImage());
@@ -45,6 +47,7 @@ public class PIf extends JFrame implements ActionListener {
 		main.setLayout(new BoxLayout(main, BoxLayout.PAGE_AXIS));
 		JPanel p = new JPanel();
 		p.setLayout(new FlowLayout(FlowLayout.LEFT));
+		this.select = select;
 
 		try {
 			File file = new File("./ins/PIf_" + PIf + ".txt");
@@ -148,6 +151,8 @@ public class PIf extends JFrame implements ActionListener {
 				if (toggle) {
 					if (temp.substring(0, temp.indexOf("\\")).equals("topic")) {
 						cut.add("\""+topic.getTopic()+"\"");
+					} else if(temp.substring(0, temp.indexOf("\\")).equals("num")){
+						cut.add(String.valueOf(select));
 					} else {
 						for (int k = 0; k < PIfVal.size(); k++) {
 

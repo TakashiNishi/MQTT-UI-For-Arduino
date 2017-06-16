@@ -20,76 +20,84 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class Connection extends JFrame{
-	static String arduino;
-	static String wifi_ssid;
-	static char[] wifi_password;
-	static String mqtt_clientid;
-	static String mqtt_server;
-	static String mqtt_port;
-	static String mqtt_username;
-	static char[] mqtt_password;
-	static ArrayList<String> log = new ArrayList<String>();
-	static ArrayList<String> pos = new ArrayList<String>();
-	static ArrayList<String> att = new ArrayList<String>();
+	static String arduino;//arduinoのボード
+	static String wifi_ssid;//Wi-Fi通信のSSID
+	static char[] wifi_password;//Wi-Fi通信のPassword
+	static String mqtt_clientid;//MQTT通信のCliendID
+	static String mqtt_server;//MQTT通信のサーバー名
+	static String mqtt_port;//MQTT通信のサーバーのポート番号
+	static String mqtt_username;//MQTT通信のユーザーネーム
+	static char[] mqtt_password;//MQTT通信のユーザーネームに対するパスワード
+
+	//log,pos,attは同じ番号で1セットとなる。本クラスではボード関係のコードが入っている
+	static ArrayList<String> log = new ArrayList<String>();//Arduinoファイルの一行分のコード内容
+	static ArrayList<String> pos = new ArrayList<String>();//logを挿入する位置。MakeCodeでコードを挿入する時に使う
+	static ArrayList<String> att = new ArrayList<String>();//logの属性。属性を使う事で効率的な仕分けが可能になる。
+
+
 	static MqttClient mqttclient;
-	String board;
+	String board;//Arduinoのボード名
 	boolean isConnected = false;
 	MqttClient mqttClient;
 
+	//Arduinoのボード名を返す
 	public String getboard(){
 		return board;
 	}
 
+	//insフォルダのCon_ファイルを読み込み、本クラスに状態を保存
 	public void setup(String Con){
 		try {
-			File file = new File("./ins/Con_" + Con + ".txt");
+			File file = new File("./ins/Con_" + Con + ".txt");//insフォルダのCon_ファイルを指定
 			FileReader filereader = new FileReader(file);
-			board ="";
+			board ="";//Arduinoのボード名を初期化
+
+			//log,pos,attを初期化
 			log.clear();
 			pos.clear();
 			att.clear();
-			int ch;
-			int m = 0;
 
-			String temp = "";
-			String command = "";
+			int ch;//chは一文字分をintにしたもの、ASCIIコード参照
+			int m = 0;//列番号、改行するごとに0になる
+
+			String temp = "";//文字chを足し合わせるもの
+			String command = "";//tempによって完成した単語であり、各行の一列目の内容を示す
 			while ((ch = filereader.read()) != -1) {
-				if (ch == 10) {
+				if (ch == 10) {//chが改行文字ならm=0にする
 					m = 0;
-				} else if (ch == 58) {
-					if (m == 0) {
+				} else if (ch == 58) {//chがコロンなら・・・
+					if (m == 0) {//m=0ならtempで繋ぎ合わせた文字をcommandに代入
 						command = temp;
 					}
-					if (command.equals("Package")) {
+					if (command.equals("Package")) {//もしcommandがPackageかつm=1ならboardにtempの文字を足す
 						if(m==1){
 							board = board + temp;
 							board = board + ":";
 						}
 					}
-					if (command.equals("Arch")) {
+					if (command.equals("Arch")) {//もしcommandがArchかつm=1ならboardにtempの文字を足す
 						if(m==1){
 							board = board + temp;
 							board = board + ":";
 						}
 					}
-					if (command.equals("Board")) {
+					if (command.equals("Board")) {//もしcommandがBoardかつm=1ならboardにtempの文字を足す
 						if(m==1){
 							board = board + temp;
 						}
 					}
-					if (command.equals("Log")) {
+					if (command.equals("Log")) {//もしcommandがLogかつm=1ならlogにtempを挿入、attにarduinoを挿入
 						if (m == 1) {
 							log.add(temp);
 							att.add("arduino");
-						} else if (m == 2) {
+						} else if (m == 2) {//もしcommandがLogかつm=2ならposにtempを代入
 							pos.add(temp);
 						}
 					}
-					temp = "";
-
+					temp = "";//tempの内容を使ったので空白にする
 					m = m + 1;
 				} else {
-					if (ch != 13) {
+					if (ch != 13) {//もし前の条件を満たさず（改行かコロン）かつCR以外ならtempにchを付け足す
 						temp = temp + (char) ch;
 
 					}
@@ -103,7 +111,8 @@ public class Connection extends JFrame{
 		}
 
 	}
-	public void mqttpublish(Topic topic) {
+
+	public void mqttpublish(Topic topic) {//topicにtopicというメッセージをパブリッシュする
 		MqttMessage message = new MqttMessage(topic.getValue().getBytes());
 		message.setQos(topic.getQoS());
 		try {
@@ -116,7 +125,7 @@ public class Connection extends JFrame{
 
 
 
-	public void mqttpublish(String topic, String mes) {
+	public void mqttpublish(String topic, String mes) {//topicにmesのメッセージをパプリッシュする
 		MqttMessage message = new MqttMessage(mes.getBytes());
 		try {
 			mqttClient.publish(topic, message);
@@ -127,7 +136,7 @@ public class Connection extends JFrame{
 	}
 
 
-	public void mqttconnect() {
+	public void mqttconnect() {//mqttサーバーに接続する
 		try {
 			mqttClient = new MqttClient("tcp://" + getMqtt_server() + ":" + getMqtt_port(),getMqtt_clientid());
 			MqttConnectOptions connOpt = new MqttConnectOptions();
@@ -141,7 +150,7 @@ public class Connection extends JFrame{
 		}
 	}
 
-	public void mqttdisconnect() {
+	public void mqttdisconnect() {//mqttサーバーとの接続を切断する
 		try {
 			mqttClient.disconnectForcibly();
 			isConnected = false;
@@ -152,51 +161,32 @@ public class Connection extends JFrame{
 		}
 	}
 
-	public boolean mqttisconnected(){
+	public boolean mqttisconnected(){//mqttサーバーとつながっているかどうかを出力
 		return isConnected;
 	}
 
 
-	public String getLog(int i) {
+	public String getLog(int i) {//i番目のlogを出力
 		return log.get(i);
 	}
 
-	public String getPos(int i) {
+	public String getPos(int i) {//i番目のposを出力
 		return pos.get(i);
 	}
 
-	public String getAtt(int i) {
+	public String getAtt(int i) {//i番目のattを出力
 		return att.get(i);
 	}
 
-	public void setArduino(String arduino) {
-		for (int i = 0; i < att.size(); i++) {
-			if (att.get(i).equals("arduino")) {
-				log.remove(i);
-				pos.remove(i);
-				att.remove(i);
-				i--;
-			}
-		}
 
-		switch (arduino) {
-		case "Arduino Yun":
-	//		new CN_ArduinoYun(log, pos, att);
-			break;
-		case "ESP8266":
-		//	new CN_ESP8266(log, pos, att);
-			break;
-		case "Edison for Arduino":
-			//new CN_Edison(log, pos, att);
-			break;
-		}
 
-	}
 
-	public int getLogsize() {
+	public int getLogsize() {//logのsizeを出力
 		return log.size();
 	}
 
+
+	//以下、Wi-FiとMQTT通信に関するデータのゲッター及びセッター
 	public void setWifi_ssid(String wifi_ssid) {
 		Connection.wifi_ssid = wifi_ssid;
 	}
@@ -253,6 +243,8 @@ public class Connection extends JFrame{
 		Connection.mqtt_password = cs;
 	}
 
+
+	//トップ画面のUIにてConnectionのデータを保存する
 	public void saveData() throws IOException{
 
 		   JFileChooser filechooser = new JFileChooser("./connect");
@@ -280,6 +272,7 @@ public class Connection extends JFrame{
 
 	}
 
+	//トップ画面のUIにてsaveDataにて保存したConnectionのデータを呼び出す
 	public void openData(){
 	    JFileChooser filechooser = new JFileChooser("./connect");
 		   FileNameExtensionFilter filter =
@@ -329,12 +322,6 @@ public class Connection extends JFrame{
 	        	  }
 	        	  num++;
 	          }
-
-
-
-
-
-
 	          br.close();
 	        }else{
 	          System.out.println("ファイルが見つからないか開けません");

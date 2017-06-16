@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 
 public class Sub extends JFrame implements ActionListener {
 	// insファイルのうちから探し出し，解析する
+	//Pubクラスと内容がほぼ同じ
 	ArrayList<JTextField> SubInput = new ArrayList<JTextField>();
 	ArrayList<JLabel> SubLabel = new ArrayList<JLabel>();
 	ArrayList<String> SubLog = new ArrayList<String>();
@@ -34,8 +35,8 @@ public class Sub extends JFrame implements ActionListener {
 	int row = 0;
 	int log = 0;
 	Topic topic;
-
-	Sub(Topic topic, String Sub) {
+	int select;
+	Sub(Topic topic, String Sub,int select) {
 		this.topic = topic;
 		ImageIcon icon = new ImageIcon("./img/MQTT.png");
 		setIconImage(icon.getImage());
@@ -45,6 +46,7 @@ public class Sub extends JFrame implements ActionListener {
 		main.setLayout(new BoxLayout(main, BoxLayout.PAGE_AXIS));
 		JPanel p = new JPanel();
 		p.setLayout(new FlowLayout(FlowLayout.LEFT));
+		this.select = select;
 
 		try {
 			File file = new File("./ins/Sub_" + Sub + ".txt");
@@ -148,7 +150,9 @@ public class Sub extends JFrame implements ActionListener {
 				if (toggle) {
 					if (temp.substring(0, temp.indexOf("\\")).equals("topic")) {
 						cut.add(topic.getTopic());
-					} else {
+					} else if(temp.substring(0, temp.indexOf("\\")).equals("num")){
+						cut.add(String.valueOf(select));
+					}else{
 						for (int k = 0; k < SubVal.size(); k++) {
 
 							if (SubVal.get(k).equals(temp.substring(0, temp.indexOf("\\")))) {

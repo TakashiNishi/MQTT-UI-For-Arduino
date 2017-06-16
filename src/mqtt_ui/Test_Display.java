@@ -24,6 +24,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import processing.core.PApplet;
 import processing.core.PSurface;
 
+//Testクラスから呼び出されるクラス
+//Pub,Subのテストをする
+//現段階では入力した値をPub,Subした値をログや折れ線グラフにする
+//Mqttライブラリの仕様より、この一つのクラスのみを用いて3種類のテストを並列処理する
 public class Test_Display extends JFrame implements MqttCallback {
 	Connection connect;
 
@@ -31,15 +35,18 @@ public class Test_Display extends JFrame implements MqttCallback {
 	ArrayList<JTextField> input2 = new ArrayList<JTextField>();
 	ArrayList<JTextField> input3 = new ArrayList<JTextField>();
 
+	//各UIのウィンドウが保持するクラス
 	ArrayList<Applet> app = new ArrayList<Applet>();
 	ArrayList<config> con = new ArrayList<config>();
 	ArrayList<JFrame> jfr = new ArrayList<JFrame>();
+
 	ArrayList<test> tes = new ArrayList<test>();
 
 	String subscribed;
 
 	int id = 0;
 
+	//画面を閉じたウィンドウが保持しているarraylist部をremoveする
 	public void windowClosed(WindowEvent e) {
 		String str = e.toString();
 		int in = Integer.parseInt(str.substring(str.indexOf("frame") + 5));
@@ -48,6 +55,7 @@ public class Test_Display extends JFrame implements MqttCallback {
 		jfr.remove(in);
 	}
 
+	//MQTTサーバーとの接続が切れたとき再接続する
 	@Override
 	public void connectionLost(Throwable cause) { // Called when the client lost
 		connect.mqttconnect();
@@ -64,6 +72,8 @@ public class Test_Display extends JFrame implements MqttCallback {
 		}
 	}
 
+	//MQTTサーバーからメッセージを受け取った時、subscribedにメッセージを代入
+	//topicが一致するsub系のUIに更新するようにフラグを出す
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		for (int i = 0; i < app.size(); i++) {
@@ -80,18 +90,20 @@ public class Test_Display extends JFrame implements MqttCallback {
 	public void deliveryComplete(IMqttDeliveryToken token) {
 	}
 
+	//mqttサーバーと接続をする
 	Test_Display(Connection connect) {
 		this.connect = connect;
 		connect.mqttconnect();
 	}
 
+	//mqttサーバーとの接続を断つ
 	public void disconnect() {
 		if (connect.isConnected) {
 			connect.mqttdisconnect();
 		}
-
 	}
 
+	//テスト用のウィンドウを同時に閉じる
 	public void closeall() {
 		for (int i = 0; i < jfr.size(); i++) {
 			app.remove(i);
@@ -104,6 +116,11 @@ public class Test_Display extends JFrame implements MqttCallback {
 		}
 	}
 
+	//新たしいテストウィンドウを加える
+	//テストは三種類
+	//log:subscribeした内容をログとして表示
+	//line:subscribeした内容を折れ線グラフで表示
+	//varbutton:入力した内容をpublishする
 	public void add(String topic, String type) {
 		tes.add(new test());
 		int temp = tes.size() - 1;
@@ -137,6 +154,7 @@ public class Test_Display extends JFrame implements MqttCallback {
 		id++;
 	}
 
+	//テスト用のUIを表示するswing画面
 	public class test extends JFrame implements WindowListener {
 		int num;
 		JFrame config;
@@ -145,6 +163,7 @@ public class Test_Display extends JFrame implements MqttCallback {
 			num = id;
 		}
 
+		//logのUIの表示をする
 		public void log(String topic) {
 
 			jfr.add(new JFrame());
@@ -167,6 +186,7 @@ public class Test_Display extends JFrame implements MqttCallback {
 
 		}
 
+		//lineのUIを表示する
 		public void line(String topic) {
 
 			jfr.add(new JFrame());
@@ -189,6 +209,7 @@ public class Test_Display extends JFrame implements MqttCallback {
 
 		}
 
+		//varbuttonのUIを表示する
 		public void varbutton(String topic) {
 
 			jfr.add(new JFrame());
@@ -217,6 +238,7 @@ public class Test_Display extends JFrame implements MqttCallback {
 
 		}
 
+		//ウィンドウが閉じたらarraylistの部分をremoveする
 		@Override
 		public void windowClosed(WindowEvent arg0) {
 			// TODO 自動生成されたメソッド・
@@ -268,6 +290,7 @@ public class Test_Display extends JFrame implements MqttCallback {
 
 	}
 
+	//設定用のウィンドウ、現段階では折れ線グラフのXやYの上限を決められる
 	public class config extends JFrame implements WindowListener {
 		int num;
 		JFrame config;
@@ -397,6 +420,7 @@ public class Test_Display extends JFrame implements MqttCallback {
 		}
 	}
 
+	//Swingのフレームの中にProcessingというGUIに特化した画面を埋め込む
 	public class Applet extends PApplet {
 		JFrame frame;
 		ArrayList<String> value = new ArrayList<String>();
@@ -436,6 +460,7 @@ public class Test_Display extends JFrame implements MqttCallback {
 			this.startSurface();
 		}
 
+		//Processing部のUIの大きさ決定
 		public void settings() {
 			switch (thisType) {
 			case "log":
@@ -451,6 +476,7 @@ public class Test_Display extends JFrame implements MqttCallback {
 
 		}
 
+		//Processing部の背景の設定
 		public void setup() {
 			switch (thisType) {
 			case "log":
@@ -478,6 +504,8 @@ public class Test_Display extends JFrame implements MqttCallback {
 
 		}
 
+		//Processingの描画部分
+		//ウィンドウが表示されているときはdraw関数をループする
 		public void draw() {
 
 			if (thisType.equals("log") && flag) {
@@ -526,6 +554,8 @@ public class Test_Display extends JFrame implements MqttCallback {
 
 		}
 
+		//マウスをクリックした時
+		//varbuttonで真ん中のボタンを押した時に呼び出される
 		public void mouseClicked() {
 			if (thisType.equals("varbutton")) {
 				if (mouseButton == LEFT) {
@@ -537,6 +567,8 @@ public class Test_Display extends JFrame implements MqttCallback {
 
 		}
 
+		//キーを押したとき
+		//varbuttonにて文字を入力した時に呼び出される
 		public void keyPressed() {
 			if (thisType.equals("varbutton")) {
 				background(255);

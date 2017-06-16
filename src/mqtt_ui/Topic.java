@@ -3,6 +3,8 @@ package mqtt_ui;
 import java.util.ArrayList;
 
 public class Topic {
+	//MQTT通信におけるTopic部
+	//このクラスにコードを含めたPubSubの内容を入れる
 	String topic;
 	String pubsub;
 	String value;
@@ -10,11 +12,14 @@ public class Topic {
 	Integer QoS;
 	String ui;
 
-	ArrayList<String> log = new ArrayList<String>();
-	ArrayList<String> pos = new ArrayList<String>();
-	ArrayList<String> att = new ArrayList<String>();
-	ArrayList<String> ins = new ArrayList<String>();
+	//Arduinoのコード部分
+	ArrayList<String> log = new ArrayList<String>();//Arduinoのコード本体
+	ArrayList<String> pos = new ArrayList<String>();//logを挿入する位置
+	ArrayList<String> att = new ArrayList<String>();//logの属性
+	ArrayList<String> ins = new ArrayList<String>();//logのを挿入する位置、同じpos内での順位付けに使う
 
+
+	//setter,getter
 	public String getUi() {
 		return ui;
 	}
@@ -74,6 +79,8 @@ public class Topic {
 		return log.size();
 	}
 
+
+	//ArduinoのコードをTopicに保存する時につかう
 	public void addLog(String log, String pos, String att) {
 		this.log.add(log);
 		this.pos.add(pos);
@@ -81,6 +88,9 @@ public class Topic {
 		this.ins.add("");
 	}
 
+	//ArduinoのコードをTopicに保存する時につかう
+	//insがある場合は同じpos内でコードが記述される順番が変動する
+	//ins:start->ins->end
 	public void addLog(String log, String pos, String att,String ins) {
 		this.log.add(log);
 		this.pos.add(pos);
@@ -95,6 +105,8 @@ public class Topic {
 		this.ins.add(i,"");
 	}
 
+
+	//Logを全て削除
 	public void clearLog() {
 		log.clear();
 		pos.clear();
@@ -102,6 +114,7 @@ public class Topic {
 		ins.clear();
 	}
 
+	//i番目のログを削除
 	public void removeLog(int i) {
 		log.remove(i);
 		pos.remove(i);
@@ -109,6 +122,7 @@ public class Topic {
 		ins.remove(i);
 	}
 
+	//attで指定された属性のログを削除
 	public void removeLogAtt(String att) {
 		for (int i = 0; i < this.att.size(); i++) {
 			if (this.att.get(i).equals(att)) {
@@ -118,6 +132,7 @@ public class Topic {
 		}
 	}
 
+	//指定したposが最初から何番目にあるかを出力
 	public int findPos(String pos){
 		for (int i = 0; i < this.pos.size(); i++) {
 			if (this.pos.get(i).equals(pos)) {
@@ -127,6 +142,9 @@ public class Topic {
 		return -1;
 	}
 
+
+	//topicにたまったログの順番を整理する
+	//主にattの属性がある場合、start->ins->endの順番に直す
 	public void makeup(String pos){
 		ArrayList<String> templog = new ArrayList<String>();
 		ArrayList<String> temppos = new ArrayList<String>();

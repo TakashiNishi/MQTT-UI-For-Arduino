@@ -25,6 +25,7 @@ public class SubConfig extends JFrame implements ActionListener {
 	SIf sif;
 	Sub sub;
 	Topic topic;
+	int select;
 
 	@Override
 	public void dispose() {
@@ -57,12 +58,12 @@ public class SubConfig extends JFrame implements ActionListener {
 		} else if (cmdName.equals("SIf_Combo")) {
 			String temp = (String)SIf_Combo.getSelectedItem();
 			if(!temp.isEmpty()){
-				sif=new SIf(topic, temp);
+				sif=new SIf(topic, temp,select);
 			}
 		} else if (cmdName.equals("Sub_Combo")) {
 			String temp = (String)Sub_Combo.getSelectedItem();
 			if(!temp.isEmpty()){
-				sub=new Sub(topic, temp);
+				sub=new Sub(topic, temp,select);
 			}
 		}
 
@@ -70,7 +71,7 @@ public class SubConfig extends JFrame implements ActionListener {
 		Sub_Combo.addActionListener(this);
 	}
 
-	SubConfig(String title, Topic topic) {
+	SubConfig(String title, Topic topic,int select) {
 		// insファイルからPD1属性ファイルを取得する
 		File file = new File("./\\ins");
 		File files[] = file.listFiles();

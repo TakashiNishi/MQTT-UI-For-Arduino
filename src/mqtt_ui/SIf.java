@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 
 public class SIf extends JFrame implements ActionListener {
 	// insファイルのうちから探し出し，解析する
+	//Pubクラスと内容がほぼ同じ
 	ArrayList<JTextField> SIfInput = new ArrayList<JTextField>();
 	ArrayList<JLabel> SIfLabel = new ArrayList<JLabel>();
 	ArrayList<String> SIfLog = new ArrayList<String>();
@@ -34,17 +35,17 @@ public class SIf extends JFrame implements ActionListener {
 	int row = 0;
 	int log = 0;
 	Topic topic;
-
-	SIf(Topic topic, String SIf) {
+	int select;
+	SIf(Topic topic, String SIf,int select) {
 		this.topic = topic;
 		ImageIcon icon = new ImageIcon("./img/MQTT.png");
 		setIconImage(icon.getImage());
-
 		setLayout(new BorderLayout());
 		JPanel main = new JPanel();
 		main.setLayout(new BoxLayout(main, BoxLayout.PAGE_AXIS));
 		JPanel p = new JPanel();
 		p.setLayout(new FlowLayout(FlowLayout.LEFT));
+		this.select = select;
 
 		try {
 			File file = new File("./ins/SIf_" + SIf + ".txt");
@@ -146,6 +147,8 @@ public class SIf extends JFrame implements ActionListener {
 				if (toggle) {
 					if (temp.substring(0, temp.indexOf("\\")).equals("topic")) {
 						cut.add(topic.getTopic());
+					} else if(temp.substring(0, temp.indexOf("\\")).equals("num")){
+						cut.add(String.valueOf(select));
 					} else {
 						for (int k = 0; k < SIfVal.size(); k++) {
 
