@@ -8,7 +8,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="img"/>
-	<classpathentry kind="lib" path="C:/Users/高史/Desktop/mqtt_controller/org.eclipse.paho.client.mqttv3-1.0.2.jar"/>
+	<classpathentry kind="lib" path="C:/pleiades/workspace/mqtt_controller/org.eclipse.paho.client.mqttv3-1.0.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/高史/Desktop/mqtt_controller/JInputJoystickTestV2/JInputJoystickTestV2/jinput/jinput.jar"/>
 	<classpathentry kind="lib" path="C:/Users/高史/Downloads/processing-3.2.3-windows64/processing-3.2.3/lib"/>
 	<classpathentry kind="lib" path="C:/Users/高史/Downloads/processing-3.2.3-windows64/processing-3.2.3/core/library/core.jar"/>
